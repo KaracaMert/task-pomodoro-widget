@@ -24,34 +24,32 @@ interface PomodoroTimerProps {
   totalDuration: number
 }
 
-const RADIUS = 14
+const RADIUS = 13
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS
 
 export function PomodoroTimer({ phase, timeRemaining, totalDuration }: PomodoroTimerProps) {
   const ratio = timeRemaining / totalDuration
-  // Offset = full circumference when no time has elapsed (ring empty),
-  // decreases toward 0 as time elapses (ring fills clockwise).
   const strokeDashoffset = CIRCUMFERENCE * ratio
   const color = getRingColor(ratio)
 
   return (
     <div className="flex items-center gap-1.5 shrink-0">
       {/* Circular progress ring */}
-      <div className="relative w-9 h-9">
-        <svg className="w-9 h-9 -rotate-90" viewBox="0 0 36 36">
+      <div className="relative w-8 h-8">
+        <svg className="w-8 h-8 -rotate-90" viewBox="0 0 34 34">
           {/* Background track */}
           <circle
-            cx="18" cy="18" r={RADIUS}
+            cx="17" cy="17" r={RADIUS}
             fill="none"
-            stroke="rgba(255,255,255,0.15)"
-            strokeWidth="3"
+            stroke="rgba(255,255,255,0.10)"
+            strokeWidth="2.5"
           />
           {/* Progress arc */}
           <circle
-            cx="18" cy="18" r={RADIUS}
+            cx="17" cy="17" r={RADIUS}
             fill="none"
             stroke={color}
-            strokeWidth="3"
+            strokeWidth="2.5"
             strokeDasharray={CIRCUMFERENCE}
             strokeDashoffset={strokeDashoffset}
             strokeLinecap="round"
@@ -59,13 +57,13 @@ export function PomodoroTimer({ phase, timeRemaining, totalDuration }: PomodoroT
           />
         </svg>
         {/* Phase icon centered inside ring */}
-        <span className="absolute inset-0 flex items-center justify-center text-[11px] leading-none">
+        <span className="absolute inset-0 flex items-center justify-center text-[10px] leading-none">
           {PHASE_ICONS[phase]}
         </span>
       </div>
 
       {/* MM:SS countdown */}
-      <span className="font-mono text-sm text-white tabular-nums">
+      <span className="font-mono text-xs font-medium text-white/90 tabular-nums tracking-wide">
         {formatTime(timeRemaining)}
       </span>
     </div>

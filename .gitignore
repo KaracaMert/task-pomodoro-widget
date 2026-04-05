@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.env
+*.local
+coverage/
+.claude/
+CLAUDE.md
+project-info.md
+testing-guide.md

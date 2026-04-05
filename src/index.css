@@ -1,11 +1,40 @@
 @import "tailwindcss";
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
+html,
 body {
   margin: 0;
+  padding: 0;
   background: transparent;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Seelen UI design tokens — mirrors weg.css / colors.css */
+:root {
+  --slu-gray-50:  oklch(18% 0 0);
+  --slu-gray-100: oklch(27% 0 0);
+  --slu-gray-200: oklch(36% 0 0);
+  --slu-gray-600: oklch(72% 0 0);
+  --slu-gray-900: oklch(92% 0 0);
+
+  --slu-surface:      oklch(27% 0 0 / 0.85);
+  --slu-item-bg:      oklch(18% 0 0);
+  --slu-item-hover:   oklch(27% 0 0);
+  --slu-item-shadow:  0px 2px 3px 0px rgba(0, 0, 0, 0.5);
+  --slu-pop-shadow:   0 2px 8px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Widget root — sizes to content, transparent so Container is the visual surface */
+#root {
+  display: inline-flex;
+  align-items: stretch;
+  min-width: 320px;
+  max-width: 600px;
+  padding: 4px;
 }

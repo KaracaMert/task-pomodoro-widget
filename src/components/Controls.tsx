@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 interface ControlsProps {
   isRunning: boolean
@@ -6,6 +6,42 @@ interface ControlsProps {
   onStart: () => void
   onPause: () => void
   onReset: () => void
+}
+
+function DockButton({
+  onClick,
+  title,
+  pulse,
+  dim,
+  children,
+}: {
+  onClick: () => void
+  title: string
+  pulse?: boolean
+  dim?: boolean
+  children: React.ReactNode
+}) {
+  const [hovered, setHovered] = useState(false)
+
+  return (
+    <button
+      onClick={onClick}
+      title={title}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        background: hovered ? 'var(--slu-item-hover)' : 'var(--slu-item-bg)',
+        boxShadow: 'var(--slu-item-shadow)',
+        color: dim && !hovered ? 'var(--slu-gray-600)' : 'var(--slu-gray-900)',
+        transition: 'background-color 0.2s ease-out, color 0.2s ease-out, transform 0.1s ease-out',
+      }}
+      className={`w-7 h-7 rounded-[7px] shrink-0 flex items-center justify-center
+        active:scale-90 cursor-pointer
+        ${pulse ? 'animate-pulse' : ''}`}
+    >
+      {children}
+    </button>
+  )
 }
 
 export function Controls({ isRunning, justCompleted, onStart, onPause, onReset }: ControlsProps) {
@@ -25,27 +61,18 @@ export function Controls({ isRunning, justCompleted, onStart, onPause, onReset }
     return () => document.removeEventListener('keydown', handleKey)
   }, [isRunning, onStart, onPause, onReset])
 
-  const playPulse = justCompleted && !isRunning
-
   return (
     <div className="flex items-center gap-1 shrink-0">
-      <button
+      <DockButton
         onClick={isRunning ? onPause : onStart}
         title={isRunning ? 'Pause (Space)' : 'Start (Space)'}
-        className={`w-7 h-7 rounded-full flex items-center justify-center text-xs text-white
-          bg-black/50 hover:bg-black/70 active:scale-95 transition-all
-          ${playPulse ? 'animate-pulse ring-1 ring-white/40' : ''}`}
+        pulse={justCompleted && !isRunning}
       >
-        {isRunning ? '⏸' : '▶'}
-      </button>
-      <button
-        onClick={onReset}
-        title="Reset (R)"
-        className="w-7 h-7 rounded-full flex items-center justify-center text-sm text-white/60
-          bg-black/50 hover:bg-black/70 active:scale-95 transition-all hover:text-white/90"
-      >
-        ↺
-      </button>
+        <span className="text-[11px]">{isRunning ? '⏸' : '▶'}</span>
+      </DockButton>
+      <DockButton onClick={onReset} title="Reset (R)" dim>
+        <span className="text-sm">↺</span>
+      </DockButton>
     </div>
   )
 }

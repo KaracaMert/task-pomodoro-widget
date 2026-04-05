@@ -6,7 +6,10 @@ interface ContainerProps {
 
 export function Container({ children }: ContainerProps) {
   return (
-    <div className="flex items-center gap-2 rounded-lg px-3 py-2 shadow-lg bg-black/30 backdrop-blur-md border border-white/10 min-h-[50px] w-full">
+    <div
+      style={{ background: 'var(--slu-surface)', boxShadow: 'var(--slu-item-shadow)' }}
+      className="flex items-center gap-2 w-full h-[50px] px-2.5 rounded-[15px] overflow-hidden select-none"
+    >
       {children}
     </div>
   )

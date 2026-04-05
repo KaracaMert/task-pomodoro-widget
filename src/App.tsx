@@ -36,7 +36,8 @@ function App() {
         <button
           onClick={loadFile}
           disabled={isLoading}
-          className="flex-1 text-white/60 text-xs hover:text-white/90 transition-colors text-left"
+          style={{ color: isLoading ? 'var(--slu-gray-600)' : 'var(--slu-gray-900)', transition: 'color 0.2s ease-out' }}
+          className="flex-1 text-xs text-left cursor-pointer"
         >
           {isLoading ? 'Loading…' : '📂 Load tasks from Obsidian'}
         </button>

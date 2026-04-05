@@ -8,7 +8,7 @@ import { useTasks } from '@/hooks/useTasks'
 
 function App() {
   const { tasks, activeTask, setActiveTask } = useTasks()
-  const { isRunning, start, pause, reset } = useTimer()
+  const { isRunning, phase, timeRemaining, totalDuration, start, pause, reset } = useTimer()
 
   return (
     <Container>
@@ -16,7 +16,7 @@ function App() {
         <TaskDropdown tasks={tasks} activeTask={activeTask} onSelect={setActiveTask} />
         <TaskDisplay task={activeTask} />
       </div>
-      <PomodoroTimer />
+      <PomodoroTimer phase={phase} timeRemaining={timeRemaining} totalDuration={totalDuration} />
       <Controls isRunning={isRunning} onStart={start} onPause={pause} onReset={reset} />
     </Container>
   )

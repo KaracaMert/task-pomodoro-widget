@@ -1,9 +1,73 @@
-// TODO: Implement circular progress ring and countdown in Iteration 1
-export function PomodoroTimer() {
+import type { PomodoroPhase } from '@/types'
+
+const PHASE_ICONS: Record<PomodoroPhase, string> = {
+  'work': '🔴',
+  'short-break': '🟢',
+  'long-break': '🔵',
+}
+
+function formatTime(seconds: number): string {
+  const m = Math.floor(seconds / 60).toString().padStart(2, '0')
+  const s = (seconds % 60).toString().padStart(2, '0')
+  return `${m}:${s}`
+}
+
+function getRingColor(ratio: number): string {
+  if (ratio > 0.5) return '#22c55e'  // green  — plenty of time
+  if (ratio > 0.25) return '#eab308' // yellow — getting low
+  return '#ef4444'                   // red    — almost done
+}
+
+interface PomodoroTimerProps {
+  phase: PomodoroPhase
+  timeRemaining: number
+  totalDuration: number
+}
+
+const RADIUS = 14
+const CIRCUMFERENCE = 2 * Math.PI * RADIUS
+
+export function PomodoroTimer({ phase, timeRemaining, totalDuration }: PomodoroTimerProps) {
+  const ratio = timeRemaining / totalDuration
+  // Offset = full circumference when no time has elapsed (ring empty),
+  // decreases toward 0 as time elapses (ring fills clockwise).
+  const strokeDashoffset = CIRCUMFERENCE * ratio
+  const color = getRingColor(ratio)
+
   return (
-    <div className="flex items-center gap-2">
-      <span>🔴</span>
-      <span className="font-mono text-sm text-white">25:00</span>
+    <div className="flex items-center gap-1.5 shrink-0">
+      {/* Circular progress ring */}
+      <div className="relative w-9 h-9">
+        <svg className="w-9 h-9 -rotate-90" viewBox="0 0 36 36">
+          {/* Background track */}
+          <circle
+            cx="18" cy="18" r={RADIUS}
+            fill="none"
+            stroke="rgba(255,255,255,0.15)"
+            strokeWidth="3"
+          />
+          {/* Progress arc */}
+          <circle
+            cx="18" cy="18" r={RADIUS}
+            fill="none"
+            stroke={color}
+            strokeWidth="3"
+            strokeDasharray={CIRCUMFERENCE}
+            strokeDashoffset={strokeDashoffset}
+            strokeLinecap="round"
+            style={{ transition: 'stroke-dashoffset 0.5s linear, stroke 0.5s ease' }}
+          />
+        </svg>
+        {/* Phase icon centered inside ring */}
+        <span className="absolute inset-0 flex items-center justify-center text-[11px] leading-none">
+          {PHASE_ICONS[phase]}
+        </span>
+      </div>
+
+      {/* MM:SS countdown */}
+      <span className="font-mono text-sm text-white tabular-nums">
+        {formatTime(timeRemaining)}
+      </span>
     </div>
   )
 }

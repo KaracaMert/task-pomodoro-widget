@@ -28,8 +28,8 @@ A focused, single-row widget that lives in your Seelen UI desktop environment. S
 - **Auto-completion** — marks the task as done in Obsidian when the session ends
 - **Keyboard shortcuts** — `Space` start/pause, `R` reset
 - **Minimal controls** — Start, Pause, Reset
+- **Native Seelen UI aesthetic** — matches the dock's dark glass style exactly
 - **Semi-transparent UI** — floats cleanly over your desktop
-- **Dark/light mode** — follows your system preference automatically
 
 ### Task Format
 
@@ -113,14 +113,14 @@ npm run test:coverage
 
 ## Roadmap
 
-### Phase 1 — Core (current)
+### Phase 1 — Core ✅
 - [x] Single task display with dropdown selection
 - [x] Pomodoro timer: start, pause, reset
 - [x] Circular progress ring with color transitions (green → yellow → red)
 - [x] Keyboard shortcuts: `Space` start/pause, `R` reset
 - [x] Auto-check task completion in Obsidian markdown
 - [x] File System Access API — reads/writes directly to your Obsidian vault
-- [ ] Dynamic sizing, semi-transparent background (Iteration 5)
+- [x] Native Seelen UI dock aesthetic (oklch color tokens, item shadows, no blur)
 
 ### Phase 2 — Enhancements
 - [ ] Hover animations for buttons and dropdown

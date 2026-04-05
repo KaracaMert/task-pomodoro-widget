@@ -31,6 +31,7 @@ export function useTimer(config: PomodoroConfig = DEFAULT_CONFIG) {
     isRunning: false,
     sessionCount: 0,
   })
+  const [justCompleted, setJustCompleted] = useState(false)
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const configRef = useRef(config)
@@ -49,6 +50,7 @@ export function useTimer(config: PomodoroConfig = DEFAULT_CONFIG) {
           const newSessionCount =
             prev.phase === 'work' ? prev.sessionCount + 1 : prev.sessionCount
           const nextPhase = getNextPhase(prev.phase, prev.sessionCount, cfg)
+          setJustCompleted(true)
           return {
             phase: nextPhase,
             timeRemaining: getPhaseDuration(nextPhase, cfg),
@@ -65,21 +67,26 @@ export function useTimer(config: PomodoroConfig = DEFAULT_CONFIG) {
     }
   }, [state.isRunning])
 
-  const start = useCallback(() => setState(prev => ({ ...prev, isRunning: true })), [])
+  const start = useCallback(() => {
+    setJustCompleted(false)
+    setState(prev => ({ ...prev, isRunning: true }))
+  }, [])
+
   const pause = useCallback(() => setState(prev => ({ ...prev, isRunning: false })), [])
-  const reset = useCallback(
-    () =>
-      setState(prev => ({
-        ...prev,
-        timeRemaining: getPhaseDuration(prev.phase, configRef.current),
-        isRunning: false,
-      })),
-    [],
-  )
+
+  const reset = useCallback(() => {
+    setJustCompleted(false)
+    setState(prev => ({
+      ...prev,
+      timeRemaining: getPhaseDuration(prev.phase, configRef.current),
+      isRunning: false,
+    }))
+  }, [])
 
   return {
     ...state,
     totalDuration: getPhaseDuration(state.phase, config),
+    justCompleted,
     start,
     pause,
     reset,

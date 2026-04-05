@@ -10,7 +10,7 @@ import type { Task } from '@/types'
 
 function App() {
   const { tasks, activeTask, setActiveTask } = useTasks()
-  const { isRunning, phase, timeRemaining, totalDuration, start, pause, reset } = useTimer()
+  const { isRunning, phase, timeRemaining, totalDuration, justCompleted, start, pause, reset } = useTimer()
 
   const handleTaskSelect = useCallback((task: Task) => {
     setActiveTask(task)
@@ -24,7 +24,7 @@ function App() {
         <TaskDisplay task={activeTask} />
       </div>
       <PomodoroTimer phase={phase} timeRemaining={timeRemaining} totalDuration={totalDuration} />
-      <Controls isRunning={isRunning} onStart={start} onPause={pause} onReset={reset} />
+      <Controls isRunning={isRunning} justCompleted={justCompleted} onStart={start} onPause={pause} onReset={reset} />
     </Container>
   )
 }

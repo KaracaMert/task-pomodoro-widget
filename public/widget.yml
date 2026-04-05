@@ -1,0 +1,9 @@
+displayName: "Pomodoro Timer"
+description: "Minimalistic Pomodoro timer widget integrated with Obsidian markdown tasks."
+version: "0.1.0"
+author: "KaracaMert"
+tags:
+  - productivity
+  - pomodoro
+  - timer
+  - obsidian

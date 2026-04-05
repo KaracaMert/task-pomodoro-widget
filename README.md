@@ -26,9 +26,20 @@ A focused, single-row widget that lives in your Seelen UI desktop environment. S
 - **Pomodoro timer** — work (25min), short break (5min), long break (15min) phases
 - **Circular progress ring** — color-coded feedback: green → yellow → red as time runs out
 - **Auto-completion** — marks the task as done in Obsidian when the session ends
+- **Keyboard shortcuts** — `Space` start/pause, `R` reset
 - **Minimal controls** — Start, Pause, Reset
 - **Semi-transparent UI** — floats cleanly over your desktop
 - **Dark/light mode** — follows your system preference automatically
+
+### Task Format
+
+Tasks are read from any Obsidian `.md` file. The widget picks up incomplete Markdown checkboxes:
+
+```markdown
+- [ ] Task title                        ← title only
+- [ ] Task title :: goal description    ← title + goal shown in widget
+- [x] Already done                      ← skipped
+```
 
 ---
 
@@ -103,16 +114,17 @@ npm run test:coverage
 ## Roadmap
 
 ### Phase 1 — Core (current)
-- [ ] Single task display with dropdown selection
-- [ ] Pomodoro timer: start, pause, reset
-- [ ] Circular progress ring with color transitions
-- [ ] Auto-check task completion in Obsidian markdown
-- [ ] Dynamic sizing, semi-transparent background
+- [x] Single task display with dropdown selection
+- [x] Pomodoro timer: start, pause, reset
+- [x] Circular progress ring with color transitions (green → yellow → red)
+- [x] Keyboard shortcuts: `Space` start/pause, `R` reset
+- [x] Auto-check task completion in Obsidian markdown
+- [x] File System Access API — reads/writes directly to your Obsidian vault
+- [ ] Dynamic sizing, semi-transparent background (Iteration 5)
 
 ### Phase 2 — Enhancements
 - [ ] Hover animations for buttons and dropdown
 - [ ] Quick add task button `[+]`
-- [ ] Gesture / keyboard shortcut support
 - [ ] Sound / vibration alerts on phase change
 
 ### Phase 3 — Advanced

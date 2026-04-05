@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { Container } from '@/components/Container'
 import { Controls } from '@/components/Controls'
 import { PomodoroTimer } from '@/components/PomodoroTimer'
@@ -9,13 +9,40 @@ import { useTasks } from '@/hooks/useTasks'
 import type { Task } from '@/types'
 
 function App() {
-  const { tasks, activeTask, setActiveTask } = useTasks()
+  const { tasks, activeTask, setActiveTask, isLoading, loadFile, completeActiveTask } = useTasks()
   const { isRunning, phase, timeRemaining, totalDuration, justCompleted, start, pause, reset } = useTimer()
+
+  // Auto-complete the active task when a work session ends
+  const prevJustCompletedRef = useRef(false)
+  useEffect(() => {
+    if (justCompleted && !prevJustCompletedRef.current) {
+      // phase has already advanced — if it's now a break, a work session just ended
+      if (phase === 'short-break' || phase === 'long-break') {
+        completeActiveTask()
+      }
+    }
+    prevJustCompletedRef.current = justCompleted
+  }, [justCompleted, phase, completeActiveTask])
 
   const handleTaskSelect = useCallback((task: Task) => {
     setActiveTask(task)
     reset()
   }, [setActiveTask, reset])
+
+  // No file loaded — show a minimal prompt
+  if (tasks.length === 0) {
+    return (
+      <Container>
+        <button
+          onClick={loadFile}
+          disabled={isLoading}
+          className="flex-1 text-white/60 text-xs hover:text-white/90 transition-colors text-left"
+        >
+          {isLoading ? 'Loading…' : '📂 Load tasks from Obsidian'}
+        </button>
+      </Container>
+    )
+  }
 
   return (
     <Container>

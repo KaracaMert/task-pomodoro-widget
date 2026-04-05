@@ -1,17 +1,58 @@
-import { useState } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import type { Task } from '@/types'
-
-// TODO: Replace with Obsidian markdown reading in Iteration 4
-const MOCK_TASKS: Task[] = [
-  { id: '1', title: 'Write project report', goal: 'finish Q1 summary', completed: false, filePath: '', lineIndex: 0 },
-  { id: '2', title: 'Review pull requests', goal: 'merge before EOD', completed: false, filePath: '', lineIndex: 1 },
-  { id: '3', title: 'Update documentation', goal: undefined, completed: false, filePath: '', lineIndex: 2 },
-  { id: '4', title: 'Fix login bug', goal: 'auth flow broken on mobile', completed: false, filePath: '', lineIndex: 3 },
-  { id: '5', title: 'Team sync meeting prep', goal: undefined, completed: false, filePath: '', lineIndex: 4 },
-]
+import { parseObsidianTasks, completeTask } from '@/utils/markdownParser'
 
 export function useTasks() {
-  const [tasks] = useState<Task[]>(MOCK_TASKS)
-  const [activeTask, setActiveTask] = useState<Task | null>(MOCK_TASKS[0])
-  return { tasks, activeTask, setActiveTask }
+  const [tasks, setTasks] = useState<Task[]>([])
+  const [activeTask, setActiveTask] = useState<Task | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+
+  const fileHandleRef = useRef<FileSystemFileHandle | null>(null)
+  const markdownRef = useRef<string>('')
+
+  const loadFile = useCallback(async () => {
+    try {
+      setIsLoading(true)
+      const [handle] = await window.showOpenFilePicker({
+        types: [{ description: 'Markdown files', accept: { 'text/markdown': ['.md'] } }],
+        multiple: false,
+      })
+      fileHandleRef.current = handle
+      const file = await handle.getFile()
+      const text = await file.text()
+      markdownRef.current = text
+      const parsed = parseObsidianTasks(text, handle.name)
+      setTasks(parsed)
+      setActiveTask(parsed[0] ?? null)
+    } catch {
+      // User cancelled the file picker — no-op
+    } finally {
+      setIsLoading(false)
+    }
+  }, [])
+
+  const completeActiveTask = useCallback(async () => {
+    if (!activeTask || !fileHandleRef.current) return
+
+    // Update the markdown in memory and on disk
+    const updated = completeTask(markdownRef.current, activeTask.lineIndex)
+    markdownRef.current = updated
+
+    try {
+      const writable = await fileHandleRef.current.createWritable()
+      await writable.write(updated)
+      await writable.close()
+    } catch {
+      // Write permission denied — markdown updated in memory only
+    }
+
+    // Remove completed task, advance to next
+    setTasks(prev => {
+      const remaining = prev.filter(t => t.id !== activeTask.id)
+      setActiveTask(remaining[0] ?? null)
+      return remaining
+    })
+  }, [activeTask])
+
+  return { tasks, activeTask, setActiveTask, isLoading, loadFile, completeActiveTask }
 }
